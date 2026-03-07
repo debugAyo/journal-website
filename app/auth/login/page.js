@@ -56,9 +56,8 @@ function LoginPageContent() {
       return;
     }
 
-    router.replace(result?.url || "/dashboard");
-    router.refresh();
-    setLoading(false);
+    // Successful login - use window.location for reliable redirect
+    window.location.href = "/dashboard";
   };
 
   return (
