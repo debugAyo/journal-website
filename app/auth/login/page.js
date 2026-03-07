@@ -34,30 +34,42 @@ function LoginPageContent() {
     setLoading(true);
     setError("");
 
-    const result = await signIn("credentials", {
-      email: formData.email,
-      password: formData.password,
-      redirect: false,
-      callbackUrl: "/dashboard",
-    });
+    try {
+      const result = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+      });
 
-    if (result?.error) {
-      // Map NextAuth error to user-friendly message
-      let errorMessage = "Invalid email or password";
-      if (result.error.includes("No account found")) {
-        errorMessage = "No account found with this email";
-      } else if (result.error.includes("Incorrect password")) {
-        errorMessage = "Incorrect password";
-      } else if (result.error.includes("CallbackRouteError")) {
-        errorMessage = "Invalid email or password";
+      // Debug: show full result (remove after fixing)
+      console.log("signIn result:", JSON.stringify(result));
+
+      if (result?.error) {
+        let errorMessage = "Invalid email or password";
+        if (result.error.includes("No account found")) {
+          errorMessage = "No account found with this email";
+        } else if (result.error.includes("Incorrect password")) {
+          errorMessage = "Incorrect password";
+        } else if (result.error.includes("CallbackRouteError")) {
+          errorMessage = "Invalid email or password";
+        }
+        setError(`${errorMessage} [debug: ${result.error}]`);
+        setLoading(false);
+        return;
       }
-      setError(errorMessage);
-      setLoading(false);
-      return;
-    }
 
-    // Successful login - use window.location for reliable redirect
-    window.location.href = "/dashboard";
+      if (result?.ok) {
+        window.location.href = "/dashboard";
+        return;
+      }
+
+      // If we get here, something unexpected happened
+      setError(`Unexpected response: ${JSON.stringify(result)}`);
+      setLoading(false);
+    } catch (err) {
+      setError(`Exception: ${err.message}`);
+      setLoading(false);
+    }
   };
 
   return (
