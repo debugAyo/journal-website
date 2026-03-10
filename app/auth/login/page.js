@@ -41,19 +41,16 @@ function LoginPageContent() {
         redirect: false,
       });
 
-      // Debug: show full result (remove after fixing)
-      console.log("signIn result:", JSON.stringify(result));
-
       if (result?.error) {
         let errorMessage = "Invalid email or password";
         if (result.error.includes("No account found")) {
           errorMessage = "No account found with this email";
         } else if (result.error.includes("Incorrect password")) {
           errorMessage = "Incorrect password";
-        } else if (result.error.includes("CallbackRouteError")) {
-          errorMessage = "Invalid email or password";
+        } else if (result.error.includes("Configuration")) {
+          errorMessage = "The system is temporarily unavailable. Please try again later.";
         }
-        setError(`${errorMessage} [debug: ${result.error}]`);
+        setError(errorMessage);
         setLoading(false);
         return;
       }
@@ -63,11 +60,10 @@ function LoginPageContent() {
         return;
       }
 
-      // If we get here, something unexpected happened
-      setError(`Unexpected response: ${JSON.stringify(result)}`);
+      setError("Something went wrong. Please try again.");
       setLoading(false);
     } catch (err) {
-      setError(`Exception: ${err.message}`);
+      setError("Unable to sign in. Please try again later.");
       setLoading(false);
     }
   };
