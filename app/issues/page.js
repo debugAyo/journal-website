@@ -4,8 +4,8 @@ import Footer from "@/app/components/Footer";
 import { prisma } from "@/lib/prisma";
 
 export const metadata = {
-  title: "Browse Issues | UJ",
-  description: "Browse all volumes and issues of Ubuntu Journal",
+  title: "Browse Issues | IJECCET",
+  description: "Browse all volumes and issues of IJECCET",
 };
 
 async function getVolumesWithIssues() {
@@ -62,7 +62,7 @@ export default async function IssuesPage() {
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-4xl font-bold mb-4">Browse Issues</h1>
           <p className="text-white/80 text-lg">
-            Explore all published volumes and issues of Ubuntu Journal
+            Explore all published volumes and issues of IJECCET
           </p>
         </div>
       </section>

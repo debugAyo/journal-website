@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ErrorBanner from "@/app/dashboard/ErrorBanner";
 
 export default function AdminDashboardPage() {
   const { data: session, status } = useSession();
@@ -98,18 +99,13 @@ export default function AdminDashboardPage() {
   if (!isAdmin) return null;
 
   return (
-    <div className="min-h-screen bg-[var(--gray-50)] py-10 px-4">
-      <div className="max-w-6xl mx-auto">
+    <>
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-[var(--gray-900)]">Admin Dashboard</h1>
           <p className="text-[var(--gray-500)] mt-1">Manage the journal system and homepage curation</p>
         </div>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
-          </div>
-        )}
+        <ErrorBanner error={error} onDismiss={() => setError("")} />
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
@@ -265,7 +261,6 @@ export default function AdminDashboardPage() {
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </>
   );
 }

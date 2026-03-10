@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import HomeBar from "@/app/components/HomeBar";
+import ErrorBanner from "@/app/dashboard/ErrorBanner";
 
 export default function SubmitArticlePage() {
   const { data: session, status } = useSession();
@@ -157,10 +157,7 @@ export default function SubmitArticlePage() {
   const prevStep = () => setStep((s) => s - 1);
 
   return (
-    <div className="min-h-screen bg-[var(--gray-50)] py-10 px-4">
-      <div className="max-w-3xl mx-auto">
-        <HomeBar backHref="/dashboard" backLabel="Back to Dashboard" />
-
+    <>
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Submit Manuscript</h1>
@@ -190,11 +187,7 @@ export default function SubmitArticlePage() {
         </div>
 
         {/* Error */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
-          </div>
-        )}
+        <ErrorBanner error={error} onDismiss={() => setError("")} />
 
         {/* Form Card */}
         <div className="bg-white rounded-xl shadow-md p-8">
@@ -573,7 +566,6 @@ export default function SubmitArticlePage() {
             </div>
           )}
         </div>
-      </div>
-    </div>
+    </>
   );
 }

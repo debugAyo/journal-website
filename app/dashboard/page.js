@@ -2,7 +2,6 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import SignOutButton from "./SignOutButton";
 import AutoRefresh from "./AutoRefresh";
 
 async function getDashboardStats(userEmail, role) {
@@ -155,42 +154,21 @@ export default async function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--gray-50)]">
+    <>
       <AutoRefresh intervalMs={15000} />
 
-      {/* Dashboard Header */}
-      <header className="bg-[#f6f3ee] border-b border-[var(--gray-300)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#1f6d68] via-[#2a6f85] to-[#8f6030] rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">U</span>
-              </div>
-              <span className="text-lg font-bold text-[var(--gray-900)]">Dashboard</span>
-            </Link>
-            <div className="flex items-center gap-4">
-              <Link href="/" className="text-[var(--gray-500)] hover:text-[var(--gray-800)] text-sm font-medium">
-                Back to Journal
-              </Link>
-              <SignOutButton />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome back, {displayName.split(" ")[0]}
-          </h1>
-          <p className="text-gray-500">
-            You are logged in as{" "}
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#eaf5f4] text-[#175653] capitalize">
-              {role.toLowerCase()}
-            </span>
-          </p>
-        </div>
+      {/* Welcome Section */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          Welcome back, {displayName.split(" ")[0]}
+        </h1>
+        <p className="text-gray-500">
+          You are logged in as{" "}
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#eaf5f4] text-[#175653] capitalize">
+            {role.toLowerCase()}
+          </span>
+        </p>
+      </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -293,8 +271,7 @@ export default async function DashboardPage() {
             </div>
           )}
         </div>
-      </main>
-    </div>
+      </>
   );
 }
 

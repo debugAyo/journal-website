@@ -1,6 +1,6 @@
 # Admin Manual
 
-This guide covers administrator functions in the Ubuntu Journal platform.
+This guide covers administrator functions in the IJECCET platform.
 
 ## Overview
 

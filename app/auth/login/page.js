@@ -85,10 +85,10 @@ function LoginPageContent() {
         <div className="relative flex flex-col justify-center px-16 text-white">
           <Link href="/" className="flex items-center gap-3 mb-12">
             <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-              <span className="text-2xl font-bold">U</span>
+              <span className="text-2xl font-bold">I</span>
             </div>
             <div>
-              <span className="text-2xl font-bold block">Ubuntu Journal</span>
+              <span className="text-2xl font-bold block">IJECCET</span>
               <span className="text-sm text-blue-200">Open Access Publishing</span>
             </div>
           </Link>
@@ -123,9 +123,9 @@ function LoginPageContent() {
           {/* Mobile Logo */}
           <Link href="/" className="lg:hidden flex items-center gap-2 justify-center mb-8">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-lg">U</span>
+              <span className="text-white font-bold text-lg">I</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">Ubuntu Journal</span>
+            <span className="text-xl font-bold text-gray-900">IJECCET</span>
           </Link>
 
           <div className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 p-8">

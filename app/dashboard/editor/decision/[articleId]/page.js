@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
+import ErrorBanner from "@/app/dashboard/ErrorBanner";
 
 const DECISIONS = [
   { value: "ACCEPT", label: "Accept", color: "bg-green-100 text-green-700" },
@@ -123,7 +124,7 @@ export default function EditorDecisionPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-500">
+      <div className="flex items-center justify-center py-20 text-gray-500">
         Loading decision page...
       </div>
     );
@@ -133,10 +134,8 @@ export default function EditorDecisionPage() {
 
   if (error && !submission) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg">
-          {error}
-        </div>
+      <div className="flex items-center justify-center py-20">
+        <ErrorBanner error={error} />
       </div>
     );
   }
@@ -144,18 +143,13 @@ export default function EditorDecisionPage() {
   const article = submission?.article;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-5xl mx-auto">
+    <>
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Make Editorial Decision</h1>
           <p className="text-gray-500 mt-1">Review all feedback and render your decision</p>
         </div>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
-          </div>
-        )}
+        <ErrorBanner error={error} onDismiss={() => setError("")} />
 
         {/* Article Info */}
         <div className="bg-white rounded-xl shadow-md p-6 mb-6">
@@ -287,7 +281,6 @@ export default function EditorDecisionPage() {
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </>
   );
 }

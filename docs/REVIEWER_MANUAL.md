@@ -1,6 +1,6 @@
 # Reviewer Manual
 
-This guide covers the peer review process for reviewers at Ubuntu Journal.
+This guide covers the peer review process for reviewers at IJECCET.
 
 ## Overview
 
@@ -224,7 +224,7 @@ For revised manuscripts:
 ## Getting Help
 
 Questions about the review process:
-- Email: codestudydebug@gmail.com
+- Email: ijeccet@futminna.edu.ng
 - Subject: Review query - [Article ID or Title]
 
 ## Best Practices Summary

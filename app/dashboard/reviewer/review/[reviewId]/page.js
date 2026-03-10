@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import ErrorBanner from "@/app/dashboard/ErrorBanner";
 
 const RECOMMENDATIONS = [
   { value: "ACCEPT", label: "Accept", color: "text-green-600" },
@@ -147,7 +148,7 @@ function ReviewFormContent() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-500">
+      <div className="flex items-center justify-center py-20 text-gray-500">
         Loading review form...
       </div>
     );
@@ -157,7 +158,7 @@ function ReviewFormContent() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex items-center justify-center py-20">
         <div className="bg-white rounded-xl shadow-md p-8 text-center max-w-md">
           <div className="text-5xl mb-4">✅</div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Review Submitted!</h2>
@@ -169,17 +170,14 @@ function ReviewFormContent() {
 
   if (error && !review) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg">
-          {error}
-        </div>
+      <div className="flex items-center justify-center py-20">
+        <ErrorBanner error={error} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-4xl mx-auto">
+    <>
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
@@ -191,19 +189,9 @@ function ReviewFormContent() {
                 : "Complete your peer review for this manuscript"}
             </p>
           </div>
-          <Link 
-            href="/dashboard/reviewer"
-            className="text-blue-600 hover:text-blue-700 font-medium"
-          >
-            ← Back to Dashboard
-          </Link>
         </div>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
-          </div>
-        )}
+        <ErrorBanner error={error} onDismiss={() => setError("")} />
 
         {/* Article Info */}
         <div className="bg-white rounded-xl shadow-md p-6 mb-6">
@@ -346,8 +334,7 @@ function ReviewFormContent() {
             </div>
           )}
         </form>
-      </div>
-    </div>
+    </>
   );
 }
 

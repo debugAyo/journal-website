@@ -3,8 +3,8 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
 export const metadata = {
-  title: "About | UJ",
-  description: "About Ubuntu Journal - our mission, scope, and publication ethics",
+  title: "About | IJECCET",
+  description: "About IJECCET - our mission, scope, and publication ethics",
 };
 
 export default function AboutPage() {
@@ -17,7 +17,7 @@ export default function AboutPage() {
         <div className="pointer-events-none absolute -top-24 left-0 h-72 w-72 rounded-full bg-[#7dc4bd]/20 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-28 right-0 h-80 w-80 rounded-full bg-[#d5a66a]/20 blur-3xl" />
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">About Ubuntu Journal</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">About IJECCET</h1>
           <p className="mx-auto max-w-2xl text-lg text-white/80">
             Advancing knowledge through open scholarship and rigorous peer review
           </p>
@@ -31,12 +31,11 @@ export default function AboutPage() {
             title="Mission Statement"
             content={
               <p className="leading-relaxed text-[var(--gray-600)]">
-                Ubuntu Journal (UJ) is dedicated to the advancement of knowledge through
+                The International Journal of Electronics, Computing, Communications Engineering
+                and Technologies (IJECCET) is dedicated to the advancement of knowledge through
                 the publication of high-quality, peer-reviewed research articles, reviews, and scholarly
                 works. Our mission is to provide an open-access platform for researchers, academics,
                 and professionals to share their findings with the global community.
-                The name &ldquo;Ubuntu&rdquo; reflects our African heritage and philosophy of shared humanity —
-                the belief that we grow through our connections with others.
               </p>
             }
           />
@@ -47,16 +46,16 @@ export default function AboutPage() {
             content={
               <>
                 <p className="mb-4 leading-relaxed text-[var(--gray-600)]">
-                  UJ publishes original research across diverse disciplines, including but not limited to:
+                  IJECCET publishes original research across its core disciplines, including but not limited to:
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {[
-                    "Science and Technology",
-                    "Arts and Humanities",
-                    "Social Sciences",
-                    "Business and Economics",
-                    "Education",
-                    "Interdisciplinary Studies",
+                    "Electronics Engineering",
+                    "Computer Science",
+                    "Communications Engineering",
+                    "Information Technology",
+                    "Embedded Systems",
+                    "Emerging Technologies",
                   ].map((field) => (
                     <div key={field} className="flex items-center gap-2 text-[var(--gray-600)]">
                       <span className="h-2 w-2 rounded-full bg-[var(--primary-500)]"></span>
@@ -104,7 +103,7 @@ export default function AboutPage() {
             title="Publication Ethics"
             content={
               <p className="leading-relaxed text-[var(--gray-600)]">
-                UJ adheres to the highest standards of publication ethics as outlined by the Committee
+                IJECCET adheres to the highest standards of publication ethics as outlined by the Committee
                 on Publication Ethics (COPE). We take allegations of misconduct seriously and have
                 established procedures for investigating and addressing ethical concerns, including
                 plagiarism, data fabrication, and conflicts of interest.
@@ -118,13 +117,13 @@ export default function AboutPage() {
             content={
               <div className="flex items-center gap-4">
                 <a
-                  href="mailto:codestudydebug@gmail.com"
+                  href="mailto:ijeccet@futminna.edu.ng"
                   className="inline-flex items-center gap-2 font-medium text-[var(--primary-700)] hover:text-[var(--primary-800)]"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  codestudydebug@gmail.com
+                  ijeccet@futminna.edu.ng
                 </a>
               </div>
             }

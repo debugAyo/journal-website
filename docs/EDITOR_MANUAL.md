@@ -1,6 +1,6 @@
 # Editor Manual
 
-This guide covers editorial functions in the Ubuntu Journal platform.
+This guide covers editorial functions in the IJECCET platform.
 
 ## Overview
 

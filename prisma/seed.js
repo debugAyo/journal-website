@@ -32,18 +32,18 @@ async function main() {
 
   const admin = await prisma.user.create({
     data: {
-      email: "admin@ubuntu-journal.org",
+      email: "admin@ijeccet.org",
       passwordHash: passwordHash,
       name: "Admin User",
       role: "ADMIN",
-      affiliation: "Ubuntu Journal Editorial Office",
+      affiliation: "IJECCET Editorial Office",
       isVerified: true,
     },
   });
 
   const editor = await prisma.user.create({
     data: {
-      email: "editor@ubuntu-journal.org",
+      email: "editor@ijeccet.org",
       passwordHash: passwordHash,
       name: "Dr. Sarah Chen",
       role: "EDITOR",
@@ -315,8 +315,8 @@ async function main() {
   console.log("\n🎉 Database seeded successfully!");
   console.log("\n📋 Test Accounts:");
   console.log("================================");
-  console.log("Admin:     admin@ubuntu-journal.org    / password123");
-  console.log("Editor:    editor@ubuntu-journal.org   / password123");
+  console.log("Admin:     admin@ijeccet.org    / password123");
+  console.log("Editor:    editor@ijeccet.org   / password123");
   console.log("Reviewer:  reviewer1@example.com    / password123");
   console.log("Reviewer:  reviewer2@example.com    / password123");
   console.log("Author:    author1@example.com      / password123");

@@ -1,4 +1,4 @@
-# Ubuntu Journal (UJ) - Academic Journal Platform
+# IJECCET - Academic Journal Platform
 
 A full-featured academic journal management system built with Next.js 16, Prisma ORM, and PostgreSQL.
 
@@ -66,8 +66,8 @@ A full-featured academic journal management system built with Next.js 16, Prisma
 
 | Role     | Email                    | Password    |
 |----------|--------------------------|-------------|
-| Admin    | admin@ubuntu-journal.org    | password123 |
-| Editor   | editor@ubuntu-journal.org   | password123 |
+| Admin    | admin@ijeccet.org    | password123 |
+| Editor   | editor@ijeccet.org   | password123 |
 | Reviewer | reviewer1@example.com    | password123 |
 | Reviewer | reviewer2@example.com    | password123 |
 | Author   | author1@example.com      | password123 |

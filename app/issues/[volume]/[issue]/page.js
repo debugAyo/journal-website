@@ -7,8 +7,8 @@ import { prisma } from "@/lib/prisma";
 export async function generateMetadata({ params }) {
   const { volume, issue } = await params;
   return {
-    title: `Volume ${volume}, Issue ${issue} | UJ`,
-    description: `Table of contents for Volume ${volume}, Issue ${issue} of Ubuntu Journal`,
+    title: `Volume ${volume}, Issue ${issue} | IJECCET`,
+    description: `Table of contents for Volume ${volume}, Issue ${issue} of IJECCET`,
   };
 }
 

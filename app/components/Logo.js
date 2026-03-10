@@ -5,78 +5,86 @@ import { useId } from "react";
 
 export default function Logo({ size = "default" }) {
   const gradientId = useId();
+  const goldId = `${gradientId}-gold`;
 
   const sizes = {
     small: {
-      box: "w-8 h-8",
-      glyph: "w-5 h-5",
-      dot: "w-2 h-2",
-      title: "text-base",
-      subtitle: "text-[10px]",
+      box: "w-9 h-9",
+      svg: "w-6 h-6",
+      title: "text-sm",
+      subtitle: "text-[9px]",
+      gap: "gap-2",
     },
     default: {
-      box: "w-10 h-10",
-      glyph: "w-6 h-6",
-      dot: "w-3 h-3",
+      box: "w-11 h-11",
+      svg: "w-7 h-7",
       title: "text-lg",
-      subtitle: "text-xs",
+      subtitle: "text-[10px]",
+      gap: "gap-2.5",
     },
     large: {
       box: "w-14 h-14",
-      glyph: "w-8 h-8",
-      dot: "w-4 h-4",
+      svg: "w-9 h-9",
       title: "text-2xl",
-      subtitle: "text-sm",
+      subtitle: "text-xs",
+      gap: "gap-3",
     },
   };
 
   const s = sizes[size] || sizes.default;
 
   return (
-    <Link href="/" className="flex items-center gap-2.5 group" aria-label="Ubuntu Journal home">
-      <div className="relative">
-        <div
-          className={`${s.box} rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 border border-white/30`}
-          style={{
-            background: "linear-gradient(145deg, #0f3d3a 0%, #175653 45%, #2f8b83 100%)",
-            boxShadow: "0 8px 20px rgba(16,56,56,0.28)",
-          }}
-        >
-          <svg viewBox="0 0 32 32" className={`${s.glyph}`} role="img" aria-hidden="true">
-            <defs>
-              <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#f7d6a3" />
-                <stop offset="100%" stopColor="#d5a66a" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M7 8.5v9.3c0 4.2 3.1 7.2 7.8 7.2 3.8 0 6.9-1.9 8.5-5.1"
-              stroke={`url(#${gradientId})`}
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
-            />
-            <path
-              d="M24.5 8.2v8.4"
-              stroke="#f4f1ea"
-              strokeWidth="2.6"
-              strokeLinecap="round"
-            />
-            <circle cx="24.5" cy="20.7" r="2.2" fill={`url(#${gradientId})`} />
-          </svg>
-        </div>
-        <div
-          className={`absolute -bottom-0.5 -right-0.5 ${s.dot} rounded-full border-2 border-white`}
-          style={{ backgroundColor: "#d5a66a" }}
-        ></div>
+    <Link href="/" className={`flex items-center ${s.gap} group`} aria-label="IJECCET home">
+      {/* Shield / crest icon */}
+      <div
+        className={`${s.box} rounded-lg flex items-center justify-center transition-shadow duration-300 group-hover:shadow-xl`}
+        style={{
+          background: "linear-gradient(160deg, #0a2e2b 0%, #14534e 50%, #1a6b64 100%)",
+          boxShadow: "0 4px 14px rgba(10,46,43,0.35)",
+        }}
+      >
+        <svg viewBox="0 0 40 40" className={s.svg} role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id={goldId} x1="0" y1="0" x2="0.5" y2="1">
+              <stop offset="0%" stopColor="#f0d89a" />
+              <stop offset="50%" stopColor="#c9a24d" />
+              <stop offset="100%" stopColor="#f0d89a" />
+            </linearGradient>
+          </defs>
+          {/* Open book */}
+          <path
+            d="M10 28 L20 25 L30 28 L30 13 L20 10 L10 13 Z"
+            fill="none"
+            stroke={`url(#${goldId})`}
+            strokeWidth="1.6"
+            strokeLinejoin="round"
+          />
+          {/* Spine */}
+          <line x1="20" y1="10" x2="20" y2="25" stroke={`url(#${goldId})`} strokeWidth="1.2" />
+          {/* Circuit / tech lines on left page */}
+          <line x1="13" y1="16" x2="18" y2="15" stroke="#8ec6c0" strokeWidth="0.9" strokeLinecap="round" />
+          <line x1="13" y1="19" x2="17" y2="18.2" stroke="#8ec6c0" strokeWidth="0.9" strokeLinecap="round" />
+          <circle cx="13" cy="16" r="0.9" fill="#8ec6c0" />
+          {/* Circuit / tech lines on right page */}
+          <line x1="22" y1="15" x2="27" y2="16" stroke="#8ec6c0" strokeWidth="0.9" strokeLinecap="round" />
+          <line x1="23" y1="18.2" x2="27" y2="19" stroke="#8ec6c0" strokeWidth="0.9" strokeLinecap="round" />
+          <circle cx="27" cy="16" r="0.9" fill="#8ec6c0" />
+        </svg>
       </div>
-      <div className="flex flex-col">
-        <span className={`${s.title} font-bold tracking-tight`} style={{ color: "#175653" }}>
-          Ubuntu
+
+      {/* Text */}
+      <div className="flex flex-col leading-none">
+        <span
+          className={`${s.title} font-bold tracking-tight`}
+          style={{ color: "#0e3d3a", fontFamily: "'Georgia', 'Times New Roman', serif" }}
+        >
+          IJECCET
         </span>
-        <span className={`${s.subtitle} -mt-1 tracking-[0.22em]`} style={{ color: "#7a6a56" }}>
-          JOURNAL
+        <span
+          className={`${s.subtitle} mt-0.5 font-medium uppercase tracking-[0.18em]`}
+          style={{ color: "#7a8a87" }}
+        >
+          Open Access Journal
         </span>
       </div>
     </Link>

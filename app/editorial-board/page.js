@@ -4,8 +4,8 @@ import Footer from "@/app/components/Footer";
 import { prisma } from "@/lib/prisma";
 
 export const metadata = {
-  title: "Editorial Board | UJ",
-  description: "Meet the editorial board of Ubuntu Journal",
+  title: "Editorial Board | IJECCET",
+  description: "Meet the editorial board of IJECCET",
 };
 
 async function getEditorialBoard() {
@@ -39,7 +39,7 @@ export default async function EditorialBoardPage() {
           </span>
           <h1 className="mt-4 text-4xl md:text-5xl font-bold mb-4">Editorial Board</h1>
           <p className="text-white/80 text-lg max-w-2xl mx-auto">
-            Meet the distinguished scholars guiding Ubuntu Journal&apos;s editorial vision
+            Meet the distinguished scholars guiding IJECCET&apos;s editorial vision
           </p>
         </div>
       </section>
@@ -57,7 +57,7 @@ export default async function EditorialBoardPage() {
             </div>
             <div>
               <p className="text-xl font-semibold">Editorial Team</p>
-              <p className="text-[#cfe8e5]">Ubuntu Journal</p>
+              <p className="text-[#cfe8e5]">IJECCET</p>
             </div>
           </div>
         </div>

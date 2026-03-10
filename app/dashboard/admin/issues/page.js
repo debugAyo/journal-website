@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ErrorBanner from "@/app/dashboard/ErrorBanner";
 
 export default function AdminIssuesPage() {
   const { data: session, status } = useSession();
@@ -111,7 +112,7 @@ export default function AdminIssuesPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-500">
+      <div className="flex items-center justify-center py-20 text-gray-500">
         Loading...
       </div>
     );
@@ -120,34 +121,21 @@ export default function AdminIssuesPage() {
   if (!isAdmin) return null;
 
   return (
-    <div className="min-h-screen bg-[var(--gray-50)] py-10 px-4">
-      <div className="max-w-4xl mx-auto">
+    <>
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Manage Issues</h1>
             <p className="text-gray-500 mt-1">Create and organize volumes and issues</p>
           </div>
-          <div className="flex gap-2">
-            <Link
-              href="/dashboard/admin"
-              className="text-[var(--primary-700)] hover:text-[var(--primary-800)] font-medium"
-            >
-              ← Back
-            </Link>
-            <button
-              onClick={() => setShowVolumeModal(true)}
-              className="bg-[var(--primary-700)] hover:bg-[var(--primary-800)] text-white font-semibold px-4 py-2 rounded-lg"
-            >
-              + New Volume
-            </button>
-          </div>
+          <button
+            onClick={() => setShowVolumeModal(true)}
+            className="bg-[var(--primary-700)] hover:bg-[var(--primary-800)] text-white font-semibold px-4 py-2 rounded-lg"
+          >
+            + New Volume
+          </button>
         </div>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
-          </div>
-        )}
+        <ErrorBanner error={error} onDismiss={() => setError("")} />
 
         {/* Volumes Accordion */}
         <div className="space-y-4">
@@ -201,7 +189,6 @@ export default function AdminIssuesPage() {
             ))
           )}
         </div>
-      </div>
 
       {/* Create Volume Modal */}
       {showVolumeModal && (
@@ -322,6 +309,6 @@ export default function AdminIssuesPage() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

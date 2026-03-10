@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
+import ErrorBanner from "@/app/dashboard/ErrorBanner";
 
 export default function RevisionPage() {
   const { data: session, status } = useSession();
@@ -175,7 +176,7 @@ export default function RevisionPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-500">
+      <div className="flex items-center justify-center py-20 text-gray-500">
         Loading revision page...
       </div>
     );
@@ -183,27 +184,20 @@ export default function RevisionPage() {
 
   if (error && !article) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg">
-          {error}
-        </div>
+      <div className="flex items-center justify-center py-20">
+        <ErrorBanner error={error} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-4xl mx-auto">
+    <>
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Submit Revision</h1>
           <p className="text-gray-500 mt-1">Upload your revised manuscript</p>
         </div>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
-          </div>
-        )}
+        <ErrorBanner error={error} onDismiss={() => setError("")} />
 
         {/* Article Info */}
         <div className="bg-white rounded-xl shadow-md p-6 mb-6">
@@ -300,7 +294,6 @@ export default function RevisionPage() {
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </>
   );
 }

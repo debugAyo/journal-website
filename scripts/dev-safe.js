@@ -47,7 +47,8 @@ function startDevServer() {
   const devPort = process.env.PORT || "3002";
   console.log(`Starting Next.js on http://localhost:${devPort}`);
 
-  const child = spawn("next", ["dev", "-p", devPort], {
+  const nextBin = path.join(process.cwd(), "node_modules", ".bin", "next");
+  const child = spawn(nextBin, ["dev", "-p", devPort], {
     stdio: "inherit",
     shell: true,
     env: process.env,

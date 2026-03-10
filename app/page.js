@@ -7,8 +7,8 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Ubuntu Journal | Open-Access Academic Publication",
-  description: "An open-access academic journal where researchers publish high-quality peer-reviewed articles.",
+  title: "IJECCET | Open-Access Academic Publication",
+  description: "International Journal of Electronics, Computing, Communications Engineering and Technologies - an open-access academic journal.",
 };
 
 async function getHomePageData() {
@@ -107,10 +107,10 @@ export default async function HomePage() {
             </div>
             
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight">
-              Ubuntu Journal
+              IJECCET
             </h1>
             <p className="text-xl md:text-2xl text-[#d8ece9] mb-3 font-light">
-              Advancing Knowledge Through Open Scholarship
+              International Journal of Electronics, Computing, Communications Engineering and Technologies
             </p>
             <p className="text-amber-100/90 mb-10 text-lg">
               ISSN: XXXX-XXXX (Online)
@@ -268,7 +268,7 @@ export default async function HomePage() {
               <EmptyState
                 icon="📄"
                 title="No articles yet"
-                description="Be the first to publish your research in Ubuntu Journal."
+                description="Be the first to publish your research in IJECCET."
                 action={{ href: "/dashboard/submit", label: "Submit Manuscript" }}
               />
             )}
@@ -282,7 +282,7 @@ export default async function HomePage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Publish With Us</h2>
             <p className="text-gray-500 max-w-2xl mx-auto">
-              Ubuntu Journal provides a world-class platform for researchers to share their work with a global audience.
+              IJECCET provides a world-class platform for researchers to share their work with a global audience.
             </p>
           </div>
           

@@ -3,7 +3,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import HomeBar from "@/app/components/HomeBar";
+import ErrorBanner from "@/app/dashboard/ErrorBanner";
 
 const statusColors = {
   DRAFT: "bg-gray-100 text-gray-600",
@@ -125,10 +125,7 @@ function MySubmissionsContent() {
   }, [status]);
 
   return (
-    <div className="min-h-screen bg-[var(--gray-50)] py-10 px-4">
-      <div className="max-w-5xl mx-auto">
-        <HomeBar backHref="/dashboard" backLabel="Back to Dashboard" />
-
+    <>
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -152,9 +149,7 @@ function MySubmissionsContent() {
         )}
 
         {error && submissions.length === 0 && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
-          </div>
+          <ErrorBanner error={error} />
         )}
 
         {/* Submissions Table */}
@@ -208,11 +203,10 @@ function MySubmissionsContent() {
             </table>
           )}
         </div>
-      </div>
-    </div>
+    </>
   );
 }
 
 function MySubmissionsShell() {
-  return <div className="min-h-screen bg-gray-50" />;
+  return <div className="py-20" />;
 }

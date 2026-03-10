@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ErrorBanner from "@/app/dashboard/ErrorBanner";
 
 const TABS = ["New", "Under Review", "Awaiting Decision", "Accepted", "Rejected"];
 
@@ -280,7 +281,7 @@ export default function EditorDashboardPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-500">
+      <div className="flex items-center justify-center py-20 text-gray-500">
         Loading editorial dashboard...
       </div>
     );
@@ -291,18 +292,13 @@ export default function EditorDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--gray-50)] py-10 px-4">
-      <div className="max-w-7xl mx-auto">
+    <>
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Editorial Dashboard</h1>
           <p className="text-gray-500 mt-1">Manage submissions, reviewer assignments, and decisions</p>
         </div>
 
-        {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-            {error}
-          </div>
-        )}
+        <ErrorBanner error={error} onDismiss={() => setError("")} />
 
         <div className="bg-white rounded-xl border border-[var(--gray-200)] overflow-hidden">
           <div className="border-b border-gray-200 px-4">
@@ -429,7 +425,6 @@ export default function EditorDashboardPage() {
             </table>
           </div>
         </div>
-      </div>
 
       {assignModalItem && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
@@ -547,6 +542,6 @@ export default function EditorDashboardPage() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

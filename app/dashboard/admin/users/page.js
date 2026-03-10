@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ErrorBanner from "@/app/dashboard/ErrorBanner";
 
 const ROLES = ["AUTHOR", "REVIEWER", "EDITOR", "ADMIN"];
 
@@ -77,7 +78,7 @@ export default function AdminUsersPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-500">
+      <div className="flex items-center justify-center py-20 text-gray-500">
         Loading users...
       </div>
     );
@@ -86,26 +87,15 @@ export default function AdminUsersPage() {
   if (!isAdmin) return null;
 
   return (
-    <div className="min-h-screen bg-[var(--gray-50)] py-10 px-4">
-      <div className="max-w-6xl mx-auto">
+    <>
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Manage Users</h1>
             <p className="text-gray-500 mt-1">Change user roles and permissions</p>
           </div>
-          <Link
-            href="/dashboard/admin"
-            className="text-[var(--primary-700)] hover:text-[var(--primary-800)] font-medium"
-          >
-            ← Back to Admin
-          </Link>
         </div>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
-          </div>
-        )}
+        <ErrorBanner error={error} onDismiss={() => setError("")} />
 
         <div className="bg-white rounded-xl border border-[var(--gray-200)] overflow-hidden">
           <table className="w-full">
@@ -154,7 +144,6 @@ export default function AdminUsersPage() {
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+    </>
   );
 }

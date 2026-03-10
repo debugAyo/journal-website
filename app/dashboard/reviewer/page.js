@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ErrorBanner from "@/app/dashboard/ErrorBanner";
 
 const TABS = ["Pending Invitations", "Active Reviews", "Completed"];
 
@@ -133,7 +134,7 @@ export default function ReviewerDashboardPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-500">
+      <div className="flex items-center justify-center py-20 text-gray-500">
         Loading reviewer dashboard...
       </div>
     );
@@ -142,18 +143,13 @@ export default function ReviewerDashboardPage() {
   if (!hasAccess) return null;
 
   return (
-    <div className="min-h-screen bg-[var(--gray-50)] py-10 px-4">
-      <div className="max-w-6xl mx-auto">
+    <>
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Reviewer Dashboard</h1>
           <p className="text-gray-500 mt-1">Manage your review assignments</p>
         </div>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
-          </div>
-        )}
+        <ErrorBanner error={error} onDismiss={() => setError("")} />
 
         <div className="bg-white rounded-xl border border-[var(--gray-200)] overflow-hidden">
           <div className="border-b border-gray-200 px-4">
@@ -277,7 +273,6 @@ export default function ReviewerDashboardPage() {
             </table>
           </div>
         </div>
-      </div>
-    </div>
+    </>
   );
 }

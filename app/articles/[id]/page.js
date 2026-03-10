@@ -96,7 +96,7 @@ export default async function ArticlePage({ params }) {
   // Generate citation
   const authorNames = authors.map((a) => a.name).filter(Boolean).join(", ");
   const year = article.publishedAt ? new Date(article.publishedAt).getFullYear() : "";
-  const citation = `${authorNames} (${year}). ${article.title}. Ubuntu Journal${volume ? `, ${volume.volumeNumber}` : ""}${issue ? `(${issue.issueNumber})` : ""}${article.pageStart && article.pageEnd ? `, ${article.pageStart}-${article.pageEnd}` : ""}.${article.doi ? ` https://doi.org/${article.doi}` : ""}`;
+  const citation = `${authorNames} (${year}). ${article.title}. IJECCET${volume ? `, ${volume.volumeNumber}` : ""}${issue ? `(${issue.issueNumber})` : ""}${article.pageStart && article.pageEnd ? `, ${article.pageStart}-${article.pageEnd}` : ""}.${article.doi ? ` https://doi.org/${article.doi}` : ""}`;
 
   return (
     <div className="min-h-screen bg-gray-50">

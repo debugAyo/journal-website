@@ -175,5 +175,5 @@ Contact the editorial office to reset your password.
 ## Getting Help
 
 For questions or issues, contact:
-- Email: codestudydebug@gmail.com
+- Email: ijeccet@futminna.edu.ng
 - Subject line: Include your article title or ID

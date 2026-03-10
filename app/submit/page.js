@@ -3,8 +3,8 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
 export const metadata = {
-  title: "Author Guidelines | UJ",
-  description: "Guidelines for authors submitting to Ubuntu Journal",
+  title: "Author Guidelines | IJECCET",
+  description: "Guidelines for authors submitting to IJECCET",
 };
 
 export default function SubmitGuidelinesPage() {

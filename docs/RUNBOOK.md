@@ -1,6 +1,6 @@
 # Operations Runbook
 
-This document covers deployment, maintenance, monitoring, and troubleshooting for the Ubuntu Journal platform.
+This document covers deployment, maintenance, monitoring, and troubleshooting for the IJECCET platform.
 
 ## Table of Contents
 
