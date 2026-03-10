@@ -8,7 +8,24 @@ const authSecret =
   process.env.NEXTAUTH_SECRET ||
   (process.env.NODE_ENV === "development" ? "dev-only-secret-change-in-production" : undefined);
 
+// On Vercel, auto-detect the correct URL from VERCEL_URL if NEXTAUTH_URL isn't properly set
+const vercelUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : undefined;
+const nextAuthUrl = process.env.NEXTAUTH_URL?.startsWith("http://localhost")
+  ? vercelUrl // Override localhost on Vercel
+  : process.env.NEXTAUTH_URL || vercelUrl;
+
 const isProduction = process.env.NODE_ENV === "production";
+const useSecureCookies = isProduction || !!process.env.VERCEL_URL;
+
+console.log("[AUTH CONFIG]", {
+  nextAuthUrl,
+  isProduction,
+  useSecureCookies,
+  hasVercelUrl: !!process.env.VERCEL_URL,
+  hasAuthSecret: !!authSecret,
+});
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
@@ -83,5 +100,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   jwt: {
     maxAge: 60 * 60 * 8,
   },
+  cookies: useSecureCookies
+    ? {
+        sessionToken: {
+          name: "__Secure-authjs.session-token",
+          options: {
+            httpOnly: true,
+            sameSite: "lax",
+            path: "/",
+            secure: true,
+          },
+        },
+      }
+    : undefined,
   secret: authSecret,
 });

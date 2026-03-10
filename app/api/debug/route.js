@@ -17,6 +17,8 @@ export async function GET() {
         hasNextAuthSecret: !!process.env.NEXTAUTH_SECRET,
         hasNextAuthUrl: !!process.env.NEXTAUTH_URL,
         nextAuthUrl: process.env.NEXTAUTH_URL || "NOT SET",
+        vercelUrl: process.env.VERCEL_URL || "NOT SET",
+        vercelEnv: process.env.VERCEL_ENV || "NOT SET",
         hasDatabaseUrl: !!process.env.DATABASE_URL,
         databaseUrlPrefix: (process.env.DATABASE_URL || "").substring(0, 30) + "...",
         nodeEnv: process.env.NODE_ENV,
