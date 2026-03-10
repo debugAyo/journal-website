@@ -8,6 +8,9 @@ const nextConfig = {
   turbopack: {
     root: __dirname,
   },
+  env: {
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+  },
 };
 
 export default nextConfig;
