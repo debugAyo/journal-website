@@ -107,6 +107,12 @@ export async function POST(req) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
+        // Extract extension from original filename so downloads have the right type
+        const originalName = file.name || "manuscript";
+        const ext = originalName.includes(".")
+            ? originalName.substring(originalName.lastIndexOf("."))
+            : file.type === "application/pdf" ? ".pdf" : ".docx";
+
         //Upload to Cloudinary
         const result = await new Promise((resolve, reject) => {
             cloudinary.uploader
@@ -114,7 +120,7 @@ export async function POST(req) {
                 {
                     resource_type: "raw",
                     folder: "journal-manuscripts",
-                    public_id: `manuscript-${Date.now()}`,
+                    public_id: `manuscript-${Date.now()}${ext}`,
                     timeout: 120000,
 
                 },
