@@ -130,8 +130,7 @@ export async function POST(req) {
                 }
             );
 
-            const fileBuffer = Buffer.from(await file.arrayBuffer());
-            uploadStream.end(fileBuffer);
+            uploadStream.end(buffer);
         });
 
         return NextResponse.json(
