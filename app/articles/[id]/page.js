@@ -194,7 +194,7 @@ export default async function ArticlePage({ params }) {
           {/* Download Button */}
           {(article.publishedUrl || article.manuscriptUrl) && (
             <a
-              href={(article.publishedUrl || article.manuscriptUrl).replace("/upload/", "/upload/fl_attachment/")}
+              href={article.publishedUrl || article.manuscriptUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-primary inline-flex"
