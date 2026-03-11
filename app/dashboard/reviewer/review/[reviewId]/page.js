@@ -199,9 +199,7 @@ function ReviewFormContent() {
           <p className="text-gray-600 text-sm mb-4">{review?.article?.abstract}</p>
           {review?.article?.manuscriptUrl && (
             <a
-              href={review.article.manuscriptUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={`/api/download?url=${encodeURIComponent(review.article.manuscriptUrl)}`}
               className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition"
             >
               📄 Download Manuscript

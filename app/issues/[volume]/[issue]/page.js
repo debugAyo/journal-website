@@ -153,9 +153,7 @@ export default async function IssuePage({ params }) {
                   )}
                   {(article.publishedUrl || article.manuscriptUrl) && (
                     <a
-                      href={article.publishedUrl || article.manuscriptUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href={`/api/download?url=${encodeURIComponent(article.publishedUrl || article.manuscriptUrl)}`}
                       className="rounded bg-[var(--primary-600)] px-3 py-1 text-xs font-medium text-white transition hover:bg-[var(--primary-700)]"
                     >
                       Download PDF

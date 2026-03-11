@@ -194,9 +194,7 @@ export default async function ArticlePage({ params }) {
           {/* Download Button */}
           {(article.publishedUrl || article.manuscriptUrl) && (
             <a
-              href={article.publishedUrl || article.manuscriptUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={`/api/download?url=${encodeURIComponent(article.publishedUrl || article.manuscriptUrl)}`}
               className="btn-primary inline-flex"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
