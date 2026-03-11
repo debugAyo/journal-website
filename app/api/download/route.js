@@ -42,10 +42,15 @@ export async function GET(req) {
       return NextResponse.json({ error: "Invalid file URL" }, { status: 400 });
     }
 
-    // Use Cloudinary's private_download_url — generates a signed, time-limited URL
-    // that works even when raw delivery is restricted on free plans
-    const signedUrl = cloudinary.utils.private_download_url(publicId, "raw", {
-      expires_at: Math.floor(Date.now() / 1000) + 300, // 5 min expiry
+    // Extract the actual file extension (pdf, docx, etc) from the public_id
+    const ext = publicId.includes(".")
+      ? publicId.substring(publicId.lastIndexOf(".") + 1)
+      : "";
+
+    // Use Cloudinary's private_download_url with the real extension
+    const signedUrl = cloudinary.utils.private_download_url(publicId, ext, {
+      resource_type: "raw",
+      expires_at: Math.floor(Date.now() / 1000) + 300,
     });
 
     // Redirect the browser to the signed URL — Cloudinary will serve the file
