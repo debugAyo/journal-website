@@ -115,47 +115,46 @@ export async function POST(req) {
 
         //Upload to Cloudinary
         const result = await new Promise((resolve, reject) => {
-            cloudinary.uploader
-            .upload_stream(
+            const uploadStream = cloudinary.uploader.upload_stream(
                 {
-                    resource_type: "raw",
                     folder: "journal-manuscripts",
+                    resource_type: "raw",
                     public_id: `manuscript-${Date.now()}${ext}`,
-                    timeout: 120000,
-
                 },
                 (error, result) => {
-                    if (error) reject(error);
-                    else resolve(result);
-                }           
-             )
-             .end(buffer);
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(result);
+                    }
+                }
+            );
 
+            const fileBuffer = Buffer.from(await file.arrayBuffer());
+            uploadStream.end(fileBuffer);
         });
 
-                return NextResponse.json(
-                        {
-                                url: result.secure_url,
-                                public_id: result.public_id,
-                            },
-                        { status: 200 }
-                );
+        return NextResponse.json(
+            {
+                url: result.secure_url,
+                public_id: result.public_id,
+            },
+            { status: 200 }
+        );
 
-            } catch (error)  {
+    } catch (error)  {
         console.error("Upload error:", error);
 
-                if (error?.name === "TimeoutError" || error?.http_code === 499) {
-                        return NextResponse.json(
-                                { error: "Upload timed out while sending to Cloudinary. Please retry with a smaller file or check network stability." },
-                                { status: 504 }
-                        );
-                }
+        if (error?.name === "TimeoutError" || error?.http_code === 499) {
+            return NextResponse.json(
+                { error: "Upload timed out while sending to Cloudinary. Please retry with a smaller file or check network stability." },
+                { status: 504 }
+            );
+        }
 
         return NextResponse.json(
             { error: "File Upload failed. Please try again."},
             { status: 500 }
         );
-      }
-            
+    }
 }
-    
