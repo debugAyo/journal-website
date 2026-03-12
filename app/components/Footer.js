@@ -31,11 +31,16 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#175653] via-[#2a6f85] to-[#8f6030] rounded-xl flex items-center justify-center shadow-lg shadow-[#175653]/20">
-                <span className="text-white font-bold text-xl">U</span>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg shadow-[#175653]/20" style={{ background: "linear-gradient(145deg, #0b2e2b 0%, #14534e 45%, #1a6b64 100%)" }}>
+                <svg viewBox="0 0 100 100" width="28" height="28" aria-hidden="true">
+                  <polygon points="50,8 88,28 88,72 50,92 12,72 12,28" fill="none" stroke="#c9a24d" strokeWidth="2.2" strokeLinejoin="round" />
+                  <path d="M32,60 L50,54 L68,60 L68,38 L50,32 L32,38 Z" fill="none" stroke="#c9a24d" strokeWidth="2" strokeLinejoin="round" />
+                  <line x1="50" y1="32" x2="50" y2="54" stroke="#c9a24d" strokeWidth="1.5" />
+                  <circle cx="50" cy="19" r="1.8" fill="#c9a24d" />
+                </svg>
               </div>
               <div>
-                <span className="text-xl font-bold text-[var(--gray-900)] block">{siteConfig.brand.name}</span>
+                <span className="text-xl font-bold text-[var(--gray-900)] block">{siteConfig.brand.shortName}</span>
                 <span className="text-xs text-[var(--gray-500)] uppercase tracking-widest">{siteConfig.brand.tagline}</span>
               </div>
             </div>

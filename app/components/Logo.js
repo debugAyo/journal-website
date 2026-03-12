@@ -4,29 +4,31 @@ import Link from "next/link";
 import { useId } from "react";
 
 export default function Logo({ size = "default" }) {
-  const gradientId = useId();
-  const goldId = `${gradientId}-gold`;
+  const uid = useId();
+  const tealGrad = `${uid}-teal`;
+  const goldGrad = `${uid}-gold`;
+  const circuitGrad = `${uid}-circuit`;
 
   const sizes = {
     small: {
       box: "w-9 h-9",
-      svg: "w-6 h-6",
+      svg: 36,
       title: "text-sm",
-      subtitle: "text-[9px]",
+      subtitle: "text-[8px]",
       gap: "gap-2",
     },
     default: {
       box: "w-11 h-11",
-      svg: "w-7 h-7",
+      svg: 44,
       title: "text-lg",
-      subtitle: "text-[10px]",
+      subtitle: "text-[9px]",
       gap: "gap-2.5",
     },
     large: {
       box: "w-14 h-14",
-      svg: "w-9 h-9",
+      svg: 56,
       title: "text-2xl",
-      subtitle: "text-xs",
+      subtitle: "text-[10px]",
       gap: "gap-3",
     },
   };
@@ -35,54 +37,114 @@ export default function Logo({ size = "default" }) {
 
   return (
     <Link href="/" className={`flex items-center ${s.gap} group`} aria-label="IJECCET home">
-      {/* Shield / crest icon */}
+      {/* Logo mark */}
       <div
-        className={`${s.box} rounded-lg flex items-center justify-center transition-shadow duration-300 group-hover:shadow-xl`}
+        className={`${s.box} rounded-xl flex items-center justify-center transition-all duration-300 group-hover:shadow-xl group-hover:scale-[1.03]`}
         style={{
-          background: "linear-gradient(160deg, #0a2e2b 0%, #14534e 50%, #1a6b64 100%)",
-          boxShadow: "0 4px 14px rgba(10,46,43,0.35)",
+          background: "linear-gradient(145deg, #0b2e2b 0%, #14534e 45%, #1a6b64 100%)",
+          boxShadow: "0 4px 16px rgba(10,46,43,0.4), inset 0 1px 0 rgba(255,255,255,0.08)",
         }}
       >
-        <svg viewBox="0 0 40 40" className={s.svg} role="img" aria-hidden="true">
+        <svg
+          viewBox="0 0 100 100"
+          width={s.svg}
+          height={s.svg}
+          role="img"
+          aria-hidden="true"
+          style={{ display: "block" }}
+        >
           <defs>
-            <linearGradient id={goldId} x1="0" y1="0" x2="0.5" y2="1">
-              <stop offset="0%" stopColor="#f0d89a" />
+            <linearGradient id={tealGrad} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#8ec6c0" />
+              <stop offset="100%" stopColor="#5ba8a0" />
+            </linearGradient>
+            <linearGradient id={goldGrad} x1="0" y1="0" x2="0.4" y2="1">
+              <stop offset="0%" stopColor="#f5e2b0" />
               <stop offset="50%" stopColor="#c9a24d" />
               <stop offset="100%" stopColor="#f0d89a" />
             </linearGradient>
+            <linearGradient id={circuitGrad} x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#8ec6c0" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#5ba8a0" stopOpacity="0.5" />
+            </linearGradient>
           </defs>
-          {/* Open book */}
-          <path
-            d="M10 28 L20 25 L30 28 L30 13 L20 10 L10 13 Z"
+
+          {/* Outer hexagonal shield outline */}
+          <polygon
+            points="50,8 88,28 88,72 50,92 12,72 12,28"
             fill="none"
-            stroke={`url(#${goldId})`}
-            strokeWidth="1.6"
+            stroke={`url(#${goldGrad})`}
+            strokeWidth="2.2"
             strokeLinejoin="round"
           />
-          {/* Spine */}
-          <line x1="20" y1="10" x2="20" y2="25" stroke={`url(#${goldId})`} strokeWidth="1.2" />
-          {/* Circuit / tech lines on left page */}
-          <line x1="13" y1="16" x2="18" y2="15" stroke="#8ec6c0" strokeWidth="0.9" strokeLinecap="round" />
-          <line x1="13" y1="19" x2="17" y2="18.2" stroke="#8ec6c0" strokeWidth="0.9" strokeLinecap="round" />
-          <circle cx="13" cy="16" r="0.9" fill="#8ec6c0" />
-          {/* Circuit / tech lines on right page */}
-          <line x1="22" y1="15" x2="27" y2="16" stroke="#8ec6c0" strokeWidth="0.9" strokeLinecap="round" />
-          <line x1="23" y1="18.2" x2="27" y2="19" stroke="#8ec6c0" strokeWidth="0.9" strokeLinecap="round" />
-          <circle cx="27" cy="16" r="0.9" fill="#8ec6c0" />
+
+          {/* Inner hexagonal frame */}
+          <polygon
+            points="50,18 78,34 78,66 50,82 22,66 22,34"
+            fill="none"
+            stroke={`url(#${tealGrad})`}
+            strokeWidth="1.2"
+            strokeLinejoin="round"
+            opacity="0.5"
+          />
+
+          {/* Central open book */}
+          <path
+            d="M32,60 L50,54 L68,60 L68,38 L50,32 L32,38 Z"
+            fill="none"
+            stroke={`url(#${goldGrad})`}
+            strokeWidth="2"
+            strokeLinejoin="round"
+          />
+          {/* Book spine */}
+          <line
+            x1="50" y1="32" x2="50" y2="54"
+            stroke={`url(#${goldGrad})`}
+            strokeWidth="1.5"
+          />
+
+          {/* Left page: circuit/tech traces */}
+          <line x1="36" y1="42" x2="46" y2="40" stroke={`url(#${circuitGrad})`} strokeWidth="1.2" strokeLinecap="round" />
+          <line x1="36" y1="47" x2="44" y2="45.5" stroke={`url(#${circuitGrad})`} strokeWidth="1.2" strokeLinecap="round" />
+          <line x1="36" y1="52" x2="46" y2="50" stroke={`url(#${circuitGrad})`} strokeWidth="1.2" strokeLinecap="round" />
+          <circle cx="36" cy="42" r="1.3" fill="#8ec6c0" />
+          <circle cx="36" cy="47" r="1.3" fill="#8ec6c0" />
+          <circle cx="36" cy="52" r="1.3" fill="#8ec6c0" />
+
+          {/* Right page: circuit/tech traces */}
+          <line x1="54" y1="40" x2="64" y2="42" stroke={`url(#${circuitGrad})`} strokeWidth="1.2" strokeLinecap="round" />
+          <line x1="56" y1="45.5" x2="64" y2="47" stroke={`url(#${circuitGrad})`} strokeWidth="1.2" strokeLinecap="round" />
+          <line x1="54" y1="50" x2="64" y2="52" stroke={`url(#${circuitGrad})`} strokeWidth="1.2" strokeLinecap="round" />
+          <circle cx="64" cy="42" r="1.3" fill="#8ec6c0" />
+          <circle cx="64" cy="47" r="1.3" fill="#8ec6c0" />
+          <circle cx="64" cy="52" r="1.3" fill="#8ec6c0" />
+
+          {/* Top: small electron orbit / signal arcs */}
+          <path
+            d="M40,24 Q50,18 60,24"
+            fill="none"
+            stroke={`url(#${tealGrad})`}
+            strokeWidth="1.2"
+            strokeLinecap="round"
+          />
+          <circle cx="50" cy="19" r="1.8" fill="#c9a24d" />
+
+          {/* Bottom accent line */}
+          <line x1="38" y1="70" x2="62" y2="70" stroke={`url(#${goldGrad})`} strokeWidth="1" strokeLinecap="round" opacity="0.6" />
         </svg>
       </div>
 
       {/* Text */}
       <div className="flex flex-col leading-none">
         <span
-          className={`${s.title} font-bold tracking-tight`}
+          className={`${s.title} font-extrabold tracking-tight`}
           style={{ color: "#0e3d3a", fontFamily: "'Georgia', 'Times New Roman', serif" }}
         >
           IJECCET
         </span>
         <span
-          className={`${s.subtitle} mt-0.5 font-medium uppercase tracking-[0.18em]`}
-          style={{ color: "#7a8a87" }}
+          className={`${s.subtitle} mt-0.5 font-semibold uppercase tracking-[0.2em]`}
+          style={{ color: "#8a9693" }}
         >
           Open Access Journal
         </span>

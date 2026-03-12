@@ -42,19 +42,31 @@ export async function GET(req) {
       return NextResponse.json({ error: "Invalid file URL" }, { status: 400 });
     }
 
-    // Extract the actual file extension (pdf, docx, etc) from the public_id
-    const ext = publicId.includes(".")
-      ? publicId.substring(publicId.lastIndexOf(".") + 1)
-      : "";
+    // Fetch the file from Cloudinary server-side and stream it to the user.
+    // This works on ALL Cloudinary plans (including free) — no private_download_url needed.
+    const cloudinaryResponse = await fetch(fileUrl);
 
-    // Use Cloudinary's private_download_url with the real extension
-    const signedUrl = cloudinary.utils.private_download_url(publicId, ext, {
-      resource_type: "raw",
-      expires_at: Math.floor(Date.now() / 1000) + 300,
+    if (!cloudinaryResponse.ok) {
+      console.error("Cloudinary fetch failed:", cloudinaryResponse.status, cloudinaryResponse.statusText);
+      return NextResponse.json({ error: "File not found on storage" }, { status: 404 });
+    }
+
+    // Determine filename for the Content-Disposition header
+    const filename = publicId.includes("/")
+      ? publicId.substring(publicId.lastIndexOf("/") + 1)
+      : publicId;
+
+    // Determine content type
+    const contentType = cloudinaryResponse.headers.get("content-type") || "application/octet-stream";
+
+    return new NextResponse(cloudinaryResponse.body, {
+      status: 200,
+      headers: {
+        "Content-Type": contentType,
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "Cache-Control": "no-store",
+      },
     });
-
-    // Redirect the browser to the signed URL — Cloudinary will serve the file
-    return NextResponse.redirect(signedUrl);
   } catch (error) {
     console.error("Download error:", error);
     return NextResponse.json({ error: "Download failed" }, { status: 500 });
