@@ -90,7 +90,7 @@ export default function AboutPage() {
             title="Open Access Policy"
             content={
               <p className="leading-relaxed text-[var(--gray-600)]">
-                UJ is committed to open access publishing. All articles are freely available to read,
+                IJECCET is committed to open access publishing. All articles are freely available to read,
                 download, and share under the Creative Commons Attribution (CC BY) license. We believe
                 that open access promotes the widest possible dissemination of research findings and
                 maximizes their impact on scholarship and practice.
