@@ -47,7 +47,7 @@ async function main() {
       passwordHash: passwordHash,
       name: "Dr. Sarah Chen",
       role: "EDITOR",
-      affiliation: "University Medical Center",
+      affiliation: "Department of Electronics Engineering",
       isVerified: true,
     },
   });
@@ -58,7 +58,7 @@ async function main() {
       passwordHash: passwordHash,
       name: "Dr. John Smith",
       role: "REVIEWER",
-      affiliation: "State University Hospital",
+      affiliation: "School of Computer Science and Embedded Systems",
       isVerified: true,
     },
   });
@@ -69,7 +69,7 @@ async function main() {
       passwordHash: passwordHash,
       name: "Dr. Maria Garcia",
       role: "REVIEWER",
-      affiliation: "Research Institute of Medicine",
+      affiliation: "Institute of Communications Engineering",
       isVerified: true,
     },
   });
@@ -80,7 +80,7 @@ async function main() {
       passwordHash: passwordHash,
       name: "Dr. Michael Brown",
       role: "AUTHOR",
-      affiliation: "City General Hospital",
+      affiliation: "Department of Information Technology",
       isVerified: true,
     },
   });
@@ -91,7 +91,7 @@ async function main() {
       passwordHash: passwordHash,
       name: "Dr. Emily Johnson",
       role: "AUTHOR",
-      affiliation: "National Health Institute",
+      affiliation: "Embedded Systems Research Center",
       isVerified: true,
     },
   });
@@ -149,10 +149,10 @@ async function main() {
   console.log("Creating articles...");
   const publishedArticle1 = await prisma.article.create({
     data: {
-      title: "Novel Approaches in Cardiovascular Disease Prevention",
+      title: "Machine Learning Applications in Electronics Engineering, Computer Science, and Communications",
       abstract:
-        "This study examines innovative strategies for preventing cardiovascular disease in high-risk populations. We conducted a randomized controlled trial with 500 participants over 24 months, comparing traditional intervention methods with a new integrated approach combining lifestyle modifications and targeted pharmacotherapy. Results demonstrate a 35% reduction in cardiovascular events in the intervention group.",
-      keywords: ["cardiovascular", "prevention", "clinical trial", "intervention"],
+        "This review explores the current state of machine learning applications in Electronics Engineering, Computer Science, Communications Engineering, Information Technology, Embedded Systems, and Emerging Technologies. It covers network optimization, signal processing, embedded systems, and predictive maintenance. We analyze 150 studies published between 2020-2024 and identify key trends, challenges, and future directions for AI-assisted systems in these fields.",
+      keywords: ["machine learning", "electronics engineering", "computer science", "communications engineering", "information technology", "embedded systems", "emerging technologies", "review"],
       status: "PUBLISHED",
       issueId: issue3.id,
       pageStart: 1,
@@ -164,10 +164,10 @@ async function main() {
 
   const publishedArticle2 = await prisma.article.create({
     data: {
-      title: "Machine Learning Applications in Medical Diagnostics",
+      title: "Emerging Technologies in Electronics and Computing",
       abstract:
-        "This review explores the current state of machine learning applications in medical diagnostics, covering image analysis, predictive modeling, and clinical decision support systems. We analyze 150 studies published between 2020-2024 and identify key trends, challenges, and future directions for AI-assisted diagnosis.",
-      keywords: ["machine learning", "diagnostics", "artificial intelligence", "review"],
+        "This review highlights the latest advancements in electronics engineering, computer science, communications engineering, information technology, embedded systems, and emerging technologies. We analyze 120 studies published between 2020-2024 and discuss innovations, challenges, and future directions for these fields.",
+      keywords: ["electronics engineering", "computer science", "communications engineering", "information technology", "embedded systems", "emerging technologies", "innovation", "review"],
       status: "PUBLISHED",
       issueId: issue3.id,
       pageStart: 16,
@@ -179,10 +179,10 @@ async function main() {
 
   const publishedArticle3 = await prisma.article.create({
     data: {
-      title: "Antibiotic Resistance Patterns in Hospital-Acquired Infections",
+      title: "Advances in Embedded Systems and IT Security",
       abstract:
-        "We present a comprehensive analysis of antibiotic resistance patterns in hospital-acquired infections across 25 healthcare facilities over a 5-year period. Our findings reveal alarming trends in multi-drug resistant organisms and highlight the urgent need for antimicrobial stewardship programs.",
-      keywords: ["antibiotic resistance", "hospital infections", "epidemiology", "stewardship"],
+        "We present a comprehensive analysis of embedded systems and information technology security trends across 25 research facilities over a 5-year period. Our findings reveal key developments in secure embedded platforms and highlight the urgent need for robust cybersecurity programs.",
+      keywords: ["embedded systems", "information technology", "cybersecurity", "platform security", "review"],
       status: "PUBLISHED",
       issueId: issue2.id,
       pageStart: 1,
@@ -200,7 +200,7 @@ async function main() {
       revisionNumber: 1,
       notes: JSON.stringify({
         coAuthors: [
-          { name: "Dr. James Wilson", affiliation: "State Medical School" },
+          { name: "Dr. James Wilson", affiliation: "School of Electronics Engineering" },
         ],
       }),
     },
@@ -261,10 +261,10 @@ async function main() {
   // Create submitted article (awaiting assignment)
   const submittedArticle = await prisma.article.create({
     data: {
-      title: "Nutritional Interventions for Cognitive Health in Aging Populations",
+      title: "Innovations in Embedded Systems for Emerging Technologies",
       abstract:
-        "A systematic review and meta-analysis of dietary interventions aimed at preserving cognitive function in elderly populations. We analyzed 45 randomized controlled trials and identified key nutritional factors associated with reduced cognitive decline.",
-      keywords: ["nutrition", "cognitive health", "aging", "meta-analysis"],
+        "A systematic review and meta-analysis of embedded systems innovations aimed at advancing emerging technologies. We analyzed 45 research projects and identified key engineering factors associated with improved system performance and reliability.",
+      keywords: ["embedded systems", "emerging technologies", "electronics engineering", "computing", "meta-analysis"],
       status: "SUBMITTED",
     },
   });
