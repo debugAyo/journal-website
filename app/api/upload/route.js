@@ -1,75 +1,57 @@
 import { NextResponse } from "next/server";
-import { v2 as cloudinary } from "cloudinary";
+import { supabase, supabaseAdmin } from "@/lib/supabaseClient";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
 
-const cloudinaryCloudName = process.env.CLOUDINARY_CLOUD_NAME;
-const cloudinaryApiKey = process.env.CLOUDINARY_API_KEY;
-const cloudinaryApiSecret = process.env.CLOUDINARY_API_SECRET;
-
-cloudinary.config({
-    cloud_name: cloudinaryCloudName,
-    api_key: cloudinaryApiKey,
-    api_secret: cloudinaryApiSecret,
-});
-
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_BUCKET || "manuscripts";
 
 export async function GET() {
-    const configured = Boolean(
-        cloudinaryCloudName && cloudinaryApiKey && cloudinaryApiSecret
-    );
+    const hasUrl = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
+    const hasAnonKey = Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
-    if (!configured) {
+    if (!hasUrl || !hasAnonKey) {
         return NextResponse.json(
             {
                 ok: false,
                 configured: false,
-                error: "Missing one or more Cloudinary env vars: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET",
+                error: "Missing Supabase env vars: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY",
             },
             { status: 500 }
         );
     }
 
-    try {
-        const ping = await cloudinary.api.ping();
-        return NextResponse.json(
-            {
-                ok: true,
-                configured: true,
-                cloudName: cloudinaryCloudName,
-                ping,
-            },
-            { status: 200 }
-        );
-    } catch (error) {
-        const message =
-            error?.message ||
-            error?.error?.message ||
-            String(error);
-        const httpCode = error?.http_code || error?.error?.http_code;
-        const errorName = error?.name || error?.error?.name;
-
-        return NextResponse.json(
-            {
-                ok: false,
-                configured: true,
-                cloudName: cloudinaryCloudName,
-                error: message,
-                httpCode,
-                errorName,
-            },
-            { status: 502 }
-        );
-    }
+    return NextResponse.json(
+        {
+            ok: true,
+            configured: true,
+            bucket: STORAGE_BUCKET,
+        },
+        { status: 200 }
+    );
 }
 
 export async function POST(req) {
     try {
-        if (!cloudinaryCloudName || !cloudinaryApiKey || !cloudinaryApiSecret) {
+        const hasUrl = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
+        const hasAnonKey = Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+        const hasServiceKey = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+        if (!hasUrl || !hasAnonKey) {
             return NextResponse.json(
-                { error: "Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET." },
+                {
+                    error: "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.",
+                    configured: false,
+                },
+                { status: 500 }
+            );
+        }
+
+        const storageClient = supabaseAdmin ?? supabase;
+        if (!storageClient) {
+            return NextResponse.json(
+                { error: "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY." },
                 { status: 500 }
             );
         }
@@ -102,41 +84,47 @@ export async function POST(req) {
                 { status: 400 }
             );
         }
-        
-        // Convert file to buffer
+
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Extract extension from original filename so downloads have the right type
         const originalName = file.name || "manuscript";
-        const ext = originalName.includes(".")
-            ? originalName.substring(originalName.lastIndexOf("."))
-            : file.type === "application/pdf" ? ".pdf" : ".docx";
+        const safeName = originalName.replace(/[^a-zA-Z0-9._-]/g, "-");
+        const objectPath = `journal-manuscripts/${Date.now()}-${safeName}`;
 
-        //Upload to Cloudinary
-        const result = await new Promise((resolve, reject) => {
-            const uploadStream = cloudinary.uploader.upload_stream(
+        const { error: uploadError } = await storageClient.storage
+            .from(STORAGE_BUCKET)
+            .upload(objectPath, buffer, {
+                contentType: file.type || "application/octet-stream",
+                upsert: false,
+            });
+
+        if (uploadError) {
+            console.error("Upload error details:", {
+                message: uploadError.message,
+                statusCode: uploadError.statusCode,
+                bucket: STORAGE_BUCKET,
+                objectPath,
+                hasServiceKey,
+            });
+            return NextResponse.json(
                 {
-                    folder: "journal-manuscripts",
-                    resource_type: "raw",
-                    public_id: `manuscript-${Date.now()}${ext}`,
+                    error: uploadError.message || "Upload failed",
+                    bucket: STORAGE_BUCKET,
                 },
-                (error, result) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(result);
-                    }
-                }
+                { status: 500 }
             );
+        }
 
-            uploadStream.end(buffer);
-        });
+        const { data: publicData } = storageClient.storage
+            .from(STORAGE_BUCKET)
+            .getPublicUrl(objectPath);
 
         return NextResponse.json(
             {
-                url: result.secure_url,
-                public_id: result.public_id,
+                url: publicData?.publicUrl,
+                path: objectPath,
+                bucket: STORAGE_BUCKET,
             },
             { status: 200 }
         );
@@ -144,15 +132,8 @@ export async function POST(req) {
     } catch (error)  {
         console.error("Upload error:", error);
 
-        if (error?.name === "TimeoutError" || error?.http_code === 499) {
-            return NextResponse.json(
-                { error: "Upload timed out while sending to Cloudinary. Please retry with a smaller file or check network stability." },
-                { status: 504 }
-            );
-        }
-
         return NextResponse.json(
-            { error: "File Upload failed. Please try again."},
+            { error: "File Upload failed. Please try again." },
             { status: 500 }
         );
     }

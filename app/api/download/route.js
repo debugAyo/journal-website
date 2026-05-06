@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { v2 as cloudinary } from "cloudinary";
+import { supabaseAdmin } from "@/lib/supabaseClient";
 
 export const runtime = "nodejs";
 
@@ -17,6 +18,23 @@ function extractPublicId(url) {
   return match ? match[1] : null;
 }
 
+function extractSupabaseObject(parsedUrl) {
+  const parts = parsedUrl.pathname.split("/").filter(Boolean);
+  const objectIndex = parts.indexOf("object");
+  if (objectIndex === -1) return null;
+
+  const maybeScope = parts[objectIndex + 1];
+  const scopeIsPublicOrSign = maybeScope === "public" || maybeScope === "sign";
+  const bucketIndex = scopeIsPublicOrSign ? objectIndex + 2 : objectIndex + 1;
+  const pathIndex = bucketIndex + 1;
+
+  const bucket = parts[bucketIndex];
+  const path = parts.slice(pathIndex).join("/");
+
+  if (!bucket || !path) return null;
+  return { bucket, path };
+}
+
 export async function GET(req) {
   try {
     const session = await auth();
@@ -31,35 +49,84 @@ export async function GET(req) {
       return NextResponse.json({ error: "No URL provided" }, { status: 400 });
     }
 
-    // Only allow Cloudinary URLs to prevent SSRF
+    // Only allow Cloudinary or Supabase Storage URLs to prevent SSRF
     const parsed = new URL(fileUrl);
-    if (!parsed.hostname.endsWith("cloudinary.com")) {
-      return NextResponse.json({ error: "Invalid file source" }, { status: 400 });
+    const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
+      ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
+      : null;
+    const isCloudinary = parsed.hostname.endsWith("cloudinary.com");
+    const isSupabase = supabaseHost
+      ? parsed.hostname === supabaseHost && parsed.pathname.startsWith("/storage/v1/")
+      : false;
+
+    if (!isCloudinary && !isSupabase) {
+      return NextResponse.json(
+        { error: "Invalid file source" },
+        { status: 400 }
+      );
     }
 
-    const publicId = extractPublicId(fileUrl);
-    if (!publicId) {
-      return NextResponse.json({ error: "Invalid file URL" }, { status: 400 });
+    let filename;
+    if (isCloudinary) {
+      const publicId = extractPublicId(fileUrl);
+      if (!publicId) {
+        return NextResponse.json({ error: "Invalid file URL" }, { status: 400 });
+      }
+      filename = publicId.includes("/")
+        ? publicId.substring(publicId.lastIndexOf("/") + 1)
+        : publicId;
+    } else {
+      const pathParts = parsed.pathname.split("/").filter(Boolean);
+      filename = pathParts.length ? pathParts[pathParts.length - 1] : "download";
     }
 
-    // Fetch the file from Cloudinary server-side and stream it to the user.
-    // This works on ALL Cloudinary plans (including free) — no private_download_url needed.
-    const cloudinaryResponse = await fetch(fileUrl);
+    if (isSupabase && supabaseAdmin) {
+      const objectInfo = extractSupabaseObject(parsed);
+      if (!objectInfo) {
+        return NextResponse.json({ error: "Invalid Supabase file URL" }, { status: 400 });
+      }
 
-    if (!cloudinaryResponse.ok) {
-      console.error("Cloudinary fetch failed:", cloudinaryResponse.status, cloudinaryResponse.statusText);
+      const { data, error } = await supabaseAdmin.storage
+        .from(objectInfo.bucket)
+        .download(objectInfo.path);
+
+      if (error || !data) {
+        console.error("Supabase download failed:", error?.message || "No data");
+        return NextResponse.json({ error: "File not found on storage" }, { status: 404 });
+      }
+
+      const arrayBuffer = await data.arrayBuffer();
+      const contentType = data.type || "application/octet-stream";
+
+      return new NextResponse(Buffer.from(arrayBuffer), {
+        status: 200,
+        headers: {
+          "Content-Type": contentType,
+          "Content-Disposition": `attachment; filename="${filename}"`,
+          "Cache-Control": "no-store",
+        },
+      });
+    }
+
+    if (isSupabase && !fileUrl.includes("/public/")) {
+      return NextResponse.json(
+        { error: "Supabase file is private. Configure SUPABASE_SERVICE_ROLE_KEY or use a public bucket." },
+        { status: 403 }
+      );
+    }
+
+    // Fetch the file from storage server-side and stream it to the user.
+    const storageResponse = await fetch(fileUrl);
+
+    if (!storageResponse.ok) {
+      console.error("Storage fetch failed:", storageResponse.status, storageResponse.statusText);
       return NextResponse.json({ error: "File not found on storage" }, { status: 404 });
     }
 
-    // Determine filename for the Content-Disposition header
-    const filename = publicId.includes("/")
-      ? publicId.substring(publicId.lastIndexOf("/") + 1)
-      : publicId;
-
     // Determine content type
-    const contentType = cloudinaryResponse.headers.get("content-type") || "application/octet-stream";
+    const contentType = storageResponse.headers.get("content-type") || "application/octet-stream";
 
-    return new NextResponse(cloudinaryResponse.body, {
+    return new NextResponse(storageResponse.body, {
       status: 200,
       headers: {
         "Content-Type": contentType,

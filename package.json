@@ -20,6 +20,7 @@
     "@prisma/adapter-pg": "^7.4.1",
     "@prisma/client": "^7.4.1",
     "@sendgrid/mail": "^8.1.6",
+    "@supabase/supabase-js": "^2.99.3",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.9.0",
     "enhanced-resolve": "^5.20.0",
