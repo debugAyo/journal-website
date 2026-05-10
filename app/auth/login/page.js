@@ -70,12 +70,14 @@ function LoginPageContent() {
       });
 
       if (result?.error) {
-        let errorMessage = "Invalid email or password";
+        let errorMessage = "Incorrect email or password";
         if (result.error.includes("No account found")) {
           errorMessage = "No account found with this email";
         } else if (result.error.includes("Incorrect password")) {
           errorMessage = "Incorrect password";
-        } else if (result.error.includes("Configuration")) {
+        } else if (result.error.includes("Email and password are required")) {
+          errorMessage = "Email and password are required";
+        } else if (result.status && result.status >= 500) {
           errorMessage = "The system is temporarily unavailable. Please try again later.";
         }
         setError(errorMessage);
