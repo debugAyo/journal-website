@@ -54,32 +54,34 @@ export async function POST(req) {
 
     const authorIds = Array.from(new Set(submissions.map((s) => s.submittedBy)));
 
-    await prisma.$transaction(async (tx) => {
-      await tx.article.update({
-        where: { id: articleId },
-        data: {
-          status: "PUBLISHED",
-          issueId,
-          doi: doi || null,
-          pageStart: pageStart ? Number(pageStart) : null,
-          pageEnd: pageEnd ? Number(pageEnd) : null,
-          publishedUrl: publishedUrl || null,
-          showOnHomepage: Boolean(showOnHomepage),
-          publishedAt: new Date(),
-        },
-      });
+    await prisma.article.update({
+      where: { id: articleId },
+      data: {
+        status: "PUBLISHED",
+        issueId,
+        doi: doi || null,
+        pageStart: pageStart ? Number(pageStart) : null,
+        pageEnd: pageEnd ? Number(pageEnd) : null,
+        publishedUrl: publishedUrl || null,
+        showOnHomepage: Boolean(showOnHomepage),
+        publishedAt: new Date(),
+      },
+    });
 
-      // Notify all authors
-      if (authorIds.length > 0) {
-        await tx.notification.createMany({
+    // Notify all authors outside the publish update to avoid transaction timeouts.
+    if (authorIds.length > 0) {
+      try {
+        await prisma.notification.createMany({
           data: authorIds.map((authorId) => ({
             userId: authorId,
             type: "article_published",
             message: `Congratulations! Your article "${article.title}" has been published.${doi ? ` DOI: ${doi}` : ""}`,
           })),
         });
+      } catch (notifyError) {
+        console.error("Notification createMany failed:", notifyError);
       }
-    });
+    }
 
     revalidatePath("/");
     revalidatePath("/issues");

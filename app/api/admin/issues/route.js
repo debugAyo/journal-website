@@ -56,7 +56,7 @@ export async function POST(req) {
     }
 
     const body = await req.json();
-    const { volumeId, issueNumber, title, publishedAt } = body;
+    const { volumeId, issueNumber, title, publishedAt, issuePdfUrl } = body;
 
     if (!volumeId) {
       return NextResponse.json({ error: "volumeId is required" }, { status: 400 });
@@ -91,6 +91,7 @@ export async function POST(req) {
         volumeId,
         issueNumber,
         title: title || null,
+        issuePdfUrl: issuePdfUrl || null,
         publishedAt: publishedAt ? new Date(publishedAt) : null,
       },
     });
@@ -99,5 +100,62 @@ export async function POST(req) {
   } catch (error) {
     console.error("Create issue error:", error);
     return NextResponse.json({ error: "Failed to create issue" }, { status: 500 });
+  }
+}
+
+export async function PATCH(req) {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.email || session?.user?.role !== "ADMIN") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const body = await req.json();
+    const { issueId, issueNumber, title, publishedAt, issuePdfUrl } = body;
+
+    if (!issueId) {
+      return NextResponse.json({ error: "issueId is required" }, { status: 400 });
+    }
+
+    const issue = await prisma.issue.findUnique({ where: { id: issueId } });
+    if (!issue) {
+      return NextResponse.json({ error: "Issue not found" }, { status: 404 });
+    }
+
+    if (issueNumber && typeof issueNumber === "number") {
+      const existing = await prisma.issue.findFirst({
+        where: {
+          volumeId: issue.volumeId,
+          issueNumber,
+          id: { not: issueId },
+        },
+      });
+
+      if (existing) {
+        return NextResponse.json(
+          { error: `Issue ${issueNumber} already exists in this volume` },
+          { status: 400 }
+        );
+      }
+    }
+
+    const publishedAtValue =
+      publishedAt === undefined ? issue.publishedAt : (publishedAt ? new Date(publishedAt) : null);
+
+    const updated = await prisma.issue.update({
+      where: { id: issueId },
+      data: {
+        issueNumber: issueNumber ?? issue.issueNumber,
+        title: title ?? issue.title,
+        issuePdfUrl: issuePdfUrl ?? issue.issuePdfUrl,
+        publishedAt: publishedAtValue,
+      },
+    });
+
+    return NextResponse.json({ issue: updated });
+  } catch (error) {
+    console.error("Update issue error:", error);
+    return NextResponse.json({ error: "Failed to update issue" }, { status: 500 });
   }
 }

@@ -52,8 +52,8 @@ export default function SubmitGuidelinesPage() {
               <p><strong>Title Page:</strong> Include title, author names and affiliations, corresponding author contact details.</p>
               <p><strong>Abstract:</strong> Structured abstract (Background, Methods, Results, Conclusions) of up to 300 words.</p>
               <p><strong>Keywords:</strong> 3-6 keywords for indexing purposes.</p>
-              <p><strong>Main Text:</strong> Introduction, Methods, Results, Discussion.</p>
-              <p><strong>References:</strong> Vancouver style, numbered in order of appearance.</p>
+              <p><strong>Main Text:</strong> Introduction, Methods, Results, Discussion, Conclusion.</p>
+              <p><strong>References:</strong> IEEE style, numbered in order of appearance.</p>
             </div>
           </section>
 

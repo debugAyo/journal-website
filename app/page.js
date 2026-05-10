@@ -12,50 +12,87 @@ export const metadata = {
 };
 
 async function getHomePageData() {
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const shouldRetry = (error) => {
+    const message = String(error?.message || "").toLowerCase();
+    return (
+      message.includes("connection terminated unexpectedly") ||
+      message.includes("timeout") ||
+      message.includes("p1001") ||
+      message.includes("p1002")
+    );
+  };
+
+  const runWithRetry = async (fn, attempts = 2) => {
+    let lastError;
+    for (let attempt = 1; attempt <= attempts; attempt += 1) {
+      try {
+        return await fn();
+      } catch (error) {
+        lastError = error;
+        if (!shouldRetry(error) || attempt === attempts) {
+          throw error;
+        }
+        await sleep(200 * attempt);
+      }
+    }
+    throw lastError;
+  };
+
   try {
     // Get latest issue
-    const latestIssue = await prisma.issue.findFirst({
-      where: { publishedAt: { not: null } },
-      orderBy: { publishedAt: "desc" },
-    });
+    const latestIssue = await runWithRetry(() =>
+      prisma.issue.findFirst({
+        where: { publishedAt: { not: null } },
+        orderBy: { publishedAt: "desc" },
+      })
+    );
 
     let latestIssueArticles = [];
     let volume = null;
 
     if (latestIssue) {
-      volume = await prisma.volume.findUnique({
-        where: { id: latestIssue.volumeId },
-      });
+      volume = await runWithRetry(() =>
+        prisma.volume.findUnique({
+          where: { id: latestIssue.volumeId },
+        })
+      );
 
-      latestIssueArticles = await prisma.article.findMany({
-        where: { issueId: latestIssue.id, status: "PUBLISHED" },
-        take: 5,
-        orderBy: { publishedAt: "desc" },
-      });
+      latestIssueArticles = await runWithRetry(() =>
+        prisma.article.findMany({
+          where: { issueId: latestIssue.id, status: "PUBLISHED" },
+          take: 5,
+          orderBy: { publishedAt: "desc" },
+        })
+      );
     }
 
     // Homepage articles selected by admin
-    const featuredArticles = await prisma.article.findMany({
-      where: { status: "PUBLISHED", showOnHomepage: true },
-      take: 6,
-      orderBy: { publishedAt: "desc" },
-    });
+    const featuredArticles = await runWithRetry(() =>
+      prisma.article.findMany({
+        where: { status: "PUBLISHED", showOnHomepage: true },
+        take: 6,
+        orderBy: { publishedAt: "desc" },
+      })
+    );
 
     // Fallback if admin has not selected any articles yet
     const recentArticles =
       featuredArticles.length > 0
         ? featuredArticles
-        : await prisma.article.findMany({
-            where: { status: "PUBLISHED" },
-            take: 6,
-            orderBy: { publishedAt: "desc" },
-          });
+        : await runWithRetry(() =>
+            prisma.article.findMany({
+              where: { status: "PUBLISHED" },
+              take: 6,
+              orderBy: { publishedAt: "desc" },
+            })
+          );
 
     // Get stats
     const [publishedCount, authorCount, issueCount] = await Promise.all([
-      prisma.article.count({ where: { status: "PUBLISHED" } }),
-      prisma.user.count({ where: { role: "AUTHOR" } }),
-      prisma.issue.count({ where: { publishedAt: { not: null } } }),
+      runWithRetry(() => prisma.article.count({ where: { status: "PUBLISHED" } })),
+      runWithRetry(() => prisma.user.count({ where: { role: "AUTHOR" } })),
+      runWithRetry(() => prisma.issue.count({ where: { publishedAt: { not: null } } })),
     ]);
 
     return {

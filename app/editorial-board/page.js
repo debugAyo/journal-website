@@ -28,19 +28,20 @@ const managingEditors = [
   {
     name: "Dr. Stephen S. Oyewobi",
     email: "oyewobistephen@futminna.edu.ng",
-    phone: "+234 703 862 7625",
+    phone: "+234 806 571 1113",
   },
   {
     name: "Dr. Waheed M. Audu",
     email: "audum@futminna.edu.ng",
-    phone: "+234 806 571 1113",
+    phone: "+234 703 862 7625",
   },
 ];
 
 const sectionEditors = [
-  { name: "Dr. Alakali Babawuya" },
-  { name: "Dr. J. A. Ajiboye" },
+  { name: "Prof. Alkali Babawuya" },
+  { name: "Dr. Johnson Adegbenga Ajiboye" },
   { name: "Dr. Ahmed Aliyu" },
+  { name: "Prof. Abubakar Saddiq Mohammed" },
 ];
 
 const advisoryBoard = {

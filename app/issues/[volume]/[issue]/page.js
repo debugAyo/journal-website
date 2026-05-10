@@ -3,6 +3,7 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
 
 export async function generateMetadata({ params }) {
   const { volume, issue } = await params;
@@ -28,7 +29,7 @@ async function getIssueData(volumeNumber, issueNumber) {
 
     const articles = await prisma.article.findMany({
       where: { issueId: issue.id, status: "PUBLISHED" },
-      orderBy: { pageStart: "asc" },
+      orderBy: [{ featuredInIssue: "desc" }, { pageStart: "asc" }],
     });
 
     // Get submission info for authors
@@ -70,6 +71,8 @@ async function getIssueData(volumeNumber, issueNumber) {
 
 export default async function IssuePage({ params }) {
   const { volume, issue } = await params;
+  const session = await auth();
+  const canDownload = Boolean(session?.user);
   const data = await getIssueData(volume, issue);
 
   if (!data) {
@@ -116,6 +119,31 @@ export default async function IssuePage({ params }) {
                 year: "numeric",
               })}
           </p>
+          {data.issue.issuePdfUrl && (
+            <div className="mt-4">
+              {canDownload ? (
+                <a
+                  href={`/api/download?url=${encodeURIComponent(data.issue.issuePdfUrl)}`}
+                  className="inline-flex items-center gap-2 rounded-lg bg-[var(--primary-600)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--primary-700)]"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download Issue PDF
+                </a>
+              ) : (
+                <div className="flex flex-wrap items-center gap-3 text-sm text-[var(--gray-500)]">
+                  <span>Please log in or create an account to view or download this issue.</span>
+                  <Link
+                    href={`/auth/login?callbackUrl=/issues/${data.volume.volumeNumber}/${data.issue.issueNumber}`}
+                    className="rounded-full border border-[var(--primary-600)] px-3 py-1 text-xs font-semibold text-[var(--primary-700)] hover:bg-[var(--primary-50)]"
+                  >
+                    Log in
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <h2 className="mb-4 text-xl font-semibold text-[var(--gray-900)]">Table of Contents</h2>
@@ -134,6 +162,11 @@ export default async function IssuePage({ params }) {
                 >
                   {article.title}
                 </Link>
+                {article.featuredInIssue && (
+                  <span className="mb-2 inline-flex items-center rounded-full bg-[var(--primary-50)] px-3 py-1 text-xs font-semibold text-[var(--primary-700)]">
+                    Featured in this issue
+                  </span>
+                )}
                 <p className="mb-2 text-sm text-[var(--gray-600)]">
                   {article.authors.join(", ") || "Anonymous"}
                 </p>
@@ -152,12 +185,24 @@ export default async function IssuePage({ params }) {
                     </a>
                   )}
                   {(article.publishedUrl || article.manuscriptUrl) && (
-                    <a
-                      href={`/api/download?url=${encodeURIComponent(article.publishedUrl || article.manuscriptUrl)}`}
-                      className="rounded bg-[var(--primary-600)] px-3 py-1 text-xs font-medium text-white transition hover:bg-[var(--primary-700)]"
-                    >
-                      Download PDF
-                    </a>
+                    canDownload ? (
+                      <a
+                        href={`/api/download?url=${encodeURIComponent(article.publishedUrl || article.manuscriptUrl)}`}
+                        className="rounded bg-[var(--primary-600)] px-3 py-1 text-xs font-medium text-white transition hover:bg-[var(--primary-700)]"
+                      >
+                        Download PDF
+                      </a>
+                    ) : (
+                      <span className="inline-flex items-center gap-2 text-xs text-[var(--gray-500)]">
+                        <span>Log in to view or download.</span>
+                        <Link
+                          href={`/auth/login?callbackUrl=/issues/${data.volume.volumeNumber}/${data.issue.issueNumber}`}
+                          className="rounded-full border border-[var(--primary-600)] px-2 py-0.5 text-[10px] font-semibold text-[var(--primary-700)] hover:bg-[var(--primary-50)]"
+                        >
+                          Log in
+                        </Link>
+                      </span>
+                    )
                   )}
                 </div>
               </div>

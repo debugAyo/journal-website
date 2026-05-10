@@ -99,3 +99,48 @@ export async function POST(req) {
     return NextResponse.json({ error: "Failed to create volume" }, { status: 500 });
   }
 }
+
+export async function PATCH(req) {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.email || session?.user?.role !== "ADMIN") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const body = await req.json();
+    const { volumeId, volumeNumber, year } = body;
+
+    if (!volumeId) {
+      return NextResponse.json({ error: "volumeId is required" }, { status: 400 });
+    }
+
+    const volume = await prisma.volume.findUnique({ where: { id: volumeId } });
+    if (!volume) {
+      return NextResponse.json({ error: "Volume not found" }, { status: 404 });
+    }
+
+    if (volumeNumber && typeof volumeNumber === "number") {
+      const existing = await prisma.volume.findUnique({ where: { volumeNumber } });
+      if (existing && existing.id !== volumeId) {
+        return NextResponse.json(
+          { error: `Volume ${volumeNumber} already exists` },
+          { status: 400 }
+        );
+      }
+    }
+
+    const updated = await prisma.volume.update({
+      where: { id: volumeId },
+      data: {
+        volumeNumber: volumeNumber ?? volume.volumeNumber,
+        year: year ?? volume.year,
+      },
+    });
+
+    return NextResponse.json({ volume: updated });
+  } catch (error) {
+    console.error("Update volume error:", error);
+    return NextResponse.json({ error: "Failed to update volume" }, { status: 500 });
+  }
+}

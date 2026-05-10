@@ -65,13 +65,20 @@ export async function POST(req) {
                 { status: 400 }
             );
         }
-        // Check file type
+        // Check file type (allow fallback to file extension when MIME type is missing)
         const allowedTypes = [
             "application/pdf",
             "application/msword",
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         ];
-        if (!allowedTypes.includes(file.type)) {
+        const fileName = file.name || "";
+        const lowerName = fileName.toLowerCase();
+        const allowedByName =
+            lowerName.endsWith(".pdf") ||
+            lowerName.endsWith(".doc") ||
+            lowerName.endsWith(".docx");
+        const typeIsUnknown = !file.type || file.type === "application/octet-stream";
+        if (!allowedTypes.includes(file.type) && !(typeIsUnknown && allowedByName)) {
             return NextResponse.json(
                 { error: "Only PDF and Word documents are allowed" },
                 { status: 400 }
@@ -110,6 +117,8 @@ export async function POST(req) {
             return NextResponse.json(
                 {
                     error: uploadError.message || "Upload failed",
+                    code: uploadError.code,
+                    statusCode: uploadError.statusCode,
                     bucket: STORAGE_BUCKET,
                 },
                 { status: 500 }

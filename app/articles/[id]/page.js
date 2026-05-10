@@ -4,6 +4,7 @@ import Footer from "@/app/components/Footer";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import CopyCitationButton from "./CopyCitationButton";
+import { auth } from "@/auth";
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -85,6 +86,8 @@ async function getArticleData(id) {
 
 export default async function ArticlePage({ params }) {
   const { id } = await params;
+  const session = await auth();
+  const canDownload = Boolean(session?.user);
   const data = await getArticleData(id);
 
   if (!data) {
@@ -193,15 +196,27 @@ export default async function ArticlePage({ params }) {
 
           {/* Download Button */}
           {(article.publishedUrl || article.manuscriptUrl) && (
-            <a
-              href={`/api/download?url=${encodeURIComponent(article.publishedUrl || article.manuscriptUrl)}`}
-              className="btn-primary inline-flex"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              Download PDF
-            </a>
+            canDownload ? (
+              <a
+                href={`/api/download?url=${encodeURIComponent(article.publishedUrl || article.manuscriptUrl)}`}
+                className="btn-primary inline-flex"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Download PDF
+              </a>
+            ) : (
+              <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
+                <span>Please log in or create an account to view or download this article.</span>
+                <Link
+                  href={`/auth/login?callbackUrl=/articles/${article.id}`}
+                  className="rounded-full border border-[var(--primary-600)] px-3 py-1 text-xs font-semibold text-[var(--primary-700)] hover:bg-[var(--primary-50)]"
+                >
+                  Log in
+                </Link>
+              </div>
+            )
           )}
         </header>
 

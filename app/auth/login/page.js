@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -16,6 +16,9 @@ function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const registered = searchParams.get("registered");
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const authError = searchParams.get("error");
+  const authErrorDescription = searchParams.get("error_description");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -24,6 +27,31 @@ function LoginPageContent() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (!error) return undefined;
+    const timer = setTimeout(() => setError(""), 6000);
+    return () => clearTimeout(timer);
+  }, [error]);
+
+  useEffect(() => {
+    if (error || (!authError && !authErrorDescription)) return;
+
+    const raw = decodeURIComponent(authErrorDescription || authError || "");
+    let message = "Invalid email or password";
+
+    if (raw.includes("No account found")) {
+      message = "No account found with this email";
+    } else if (raw.includes("Incorrect password")) {
+      message = "Incorrect password";
+    } else if (raw.includes("Configuration")) {
+      message = "The system is temporarily unavailable. Please try again later.";
+    } else if (raw === "CredentialsSignin" || raw === "CallbackRouteError") {
+      message = "Invalid email or password";
+    }
+
+    setError(message);
+  }, [authError, authErrorDescription, error]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -56,7 +84,7 @@ function LoginPageContent() {
       }
 
       if (result?.ok) {
-        window.location.href = "/dashboard";
+        window.location.href = callbackUrl;
         return;
       }
 
@@ -70,6 +98,30 @@ function LoginPageContent() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
+      {error && (
+        <div
+          className="fixed right-4 top-4 z-50 w-[min(90vw,360px)] rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700 shadow-lg"
+          role="alert"
+          aria-live="polite"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start gap-2">
+              <svg className="mt-0.5 h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-sm">{error}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setError("")}
+              className="text-red-600 hover:text-red-800"
+              aria-label="Dismiss"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
       {/* Left Side - Branding */}
       <div className="hidden lg:flex lg:w-1/2 gradient-bg relative overflow-hidden">
         {/* Decorative elements */}
@@ -136,15 +188,6 @@ function LoginPageContent() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span className="text-sm">Account created successfully! You can now sign in.</span>
-              </div>
-            )}
-
-            {error && (
-              <div className="flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6">
-                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="text-sm">{error}</span>
               </div>
             )}
 

@@ -26,6 +26,7 @@ model Article {
   keywords      String[]
   status        ArticleStatus @default(DRAFT)
   showOnHomepage Boolean      @default(false)
+  featuredInIssue Boolean     @default(false)
   manuscriptUrl String?
   publishedUrl  String?
   doi           String?
@@ -49,6 +50,7 @@ model Issue {
   volumeId    String
   issueNumber Int
   title       String?
+  issuePdfUrl String?
   publishedAt DateTime?
   createdAt   DateTime  @default(now())
 
